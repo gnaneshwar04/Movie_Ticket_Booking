@@ -1,0 +1,12 @@
+# Virtual Environments
+venv/
+.venv/
+
+# Byte-compiled / optimized / C extensions
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Database files
+*.db
+*.sqlite3
