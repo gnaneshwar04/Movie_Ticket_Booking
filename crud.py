@@ -7,7 +7,6 @@ from sqlalchemy import func
 import models
 import schemas
 
-# --- Movie Functions (from before) ---
 def get_movies(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Movie).offset(skip).limit(limit).all()
 
@@ -18,7 +17,6 @@ def create_movie(db: Session, movie: schemas.MovieCreate):
     db.refresh(db_movie)
     return db_movie
 
-# --- ADD THESE NEW FUNCTIONS ---
 def get_theaters(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Theater).offset(skip).limit(limit).all()
 
@@ -29,7 +27,6 @@ def create_theater(db: Session, theater: schemas.TheaterCreate):
     db.refresh(db_theater)
     return db_theater
 
-# --- ADD THESE NEW FUNCTIONS ---
 def get_halls(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Hall).offset(skip).limit(limit).all()
 
@@ -65,11 +62,6 @@ def get_seats_for_hall(db: Session, hall_id: int):
     return db.query(models.Seat).filter(models.Seat.hall_id == hall_id).all()
 
 def create_booking(db: Session, booking: schemas.BookingCreate):
-    # This is the core logic to prevent double booking.
-    # It checks if any of the requested seats are already in the BookedSeat table
-    # for this specific show.
-    
-    # First, find the hall_id for the given show_id
     show = db.query(models.Show).filter(models.Show.id == booking.show_id).first()
     if not show:
         raise HTTPException(status_code=404, detail="Show not found")
@@ -119,7 +111,7 @@ def create_booking(db: Session, booking: schemas.BookingCreate):
             "suggestions": suggestions
         }
         raise HTTPException(status_code=409, detail=detail)
-        # --- MODIFICATION ENDS HERE ---
+        
 
     # If no conflicts, proceed with booking
     db_booking = models.Booking(show_id=booking.show_id, booking_time=datetime.utcnow())
@@ -135,7 +127,6 @@ def create_booking(db: Session, booking: schemas.BookingCreate):
     return db_booking
 
 def get_movie_analytics(db: Session, movie_id: int, start_date: date, end_date: date):
-    # This query joins the necessary tables and performs calculations
     query_result = db.query(
         func.count(models.BookedSeat.id).label("total_tickets"),
         func.sum(models.Show.price).label("total_gmv")

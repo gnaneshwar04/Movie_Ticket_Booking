@@ -26,7 +26,7 @@ def read_movies(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 def create_movie_endpoint(movie: schemas.MovieCreate, db: Session = Depends(get_db)):
     return crud.create_movie(db=db, movie=movie)
 
-# --- ADD THESE NEW HALL ENDPOINTS ---
+# --- HALL ENDPOINTS ---
 @app.get("/theaters/", response_model=list[schemas.Theater])
 def read_theaters(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     theaters = crud.get_theaters(db, skip=skip, limit=limit)
@@ -54,7 +54,7 @@ def create_hall_for_theater(
 ):
     return crud.create_theater_hall(db=db, hall=hall, theater_id=theater_id)
 
-# --- ADD THESE NEW ENDPOINTS ---
+# --- SHOW ENDPOINTS ---
 @app.get("/shows/", response_model=list[schemas.Show])
 def read_shows(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     shows = crud.get_shows(db=db, skip=skip, limit=limit)
